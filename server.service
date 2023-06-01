@@ -1,0 +1,14 @@
+[Unit]
+Description=Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/usr/local/bin/server_control
+Environment=PYTHONPATH=/usr/local/bin/server_control/venv/bin
+ExecStart=/usr/local/bin/server_control/venv/bin/python app.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
