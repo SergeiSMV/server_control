@@ -22,18 +22,19 @@ async def chapter_access(ws, path):
                 await ws.send(json.dumps(result))
                 await ws.wait_closed()
             except websockets.ConnectionClosedOK:
-                await delClient(user_id)
+                await del_client(user_id)
                 break
     except websockets.ConnectionClosedError:
-        await delClient(user_id)
+        await del_client(user_id)
 
 
 async def get_chapter_access(data):
-    chaptersList = []
+    chapters_list = []
     user_id = int(data['user_id'])
 
     sql = 'SELECT * FROM chapters_access WHERE user_id = %s AND access = 1'
     val = (user_id,)
+    users_connect.ping(reconnect=True)
     users_cursor.execute(sql, val)
     result = users_cursor.fetchall()
     users_connect.commit()
@@ -49,12 +50,12 @@ async def get_chapter_access(data):
             'depence': depence,
             'description': description
         }
-        chaptersList.append(items_map)
+        chapters_list.append(items_map)
 
-    return chaptersList
+    return chapters_list
 
 
-async def delClient(user_id):
+async def del_client(user_id):
     try:
         del CLIENTS_ACCESS[user_id]
     except KeyError:
